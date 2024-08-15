@@ -35,6 +35,8 @@ void CandidateSet::initTrees(CandidateSet& candSet) {
 void CandidateSet::saveCheckpoint() {
     checkpoint->startStruct("CandidateSet");
     int ntrees = min(Params::getInstance().numNNITrees, (int) size());
+    //cout << "Ntrees = " << ntrees << endl;
+    // This ntrees is equal to 1
     checkpoint->startList(Params::getInstance().numNNITrees);
     for (reverse_iterator it = rbegin(); it != rend() && ntrees > 0; it++, ntrees--) {
         checkpoint->addListElement();

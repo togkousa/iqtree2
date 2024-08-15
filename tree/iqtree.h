@@ -153,6 +153,8 @@ public:
 
     void printBestCandidateTree();
 
+    void printGivenTree(const string& tree_string);
+
     /**
      * print phylolib tree to a file.
      * @param suffix suffix string for the tree file
@@ -170,6 +172,8 @@ public:
         print intermediate tree
      */
     void printIntermediateTree(int brtype);
+
+    void removeIntermediateTrees(int _num);
 
     /**
             set k-representative parameter
@@ -462,7 +466,7 @@ public:
             @param compatibleNNIs vector of all compatible NNIs
             @param changeBran whether or not the computed branch lengths should be applied
      */
-    virtual void doNNIs(vector<NNIMove> &compatibleNNIs, bool changeBran = true);
+    virtual void doNNIs(vector<NNIMove> &compatibleNNIs, bool changeBran = true, bool _write = false);
 
     /**
      *  Restore the old 5 branch lengths stored in the NNI move.
@@ -538,6 +542,8 @@ public:
      *      scores
      */
     double* lh_scores;
+
+    int counter;
 
     Linear* linRegModel;
 
