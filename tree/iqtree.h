@@ -152,9 +152,7 @@ public:
     void printResultTree(ostream &out);
 
     void printBestCandidateTree();
-
-    void printGivenTree(const string& tree_string);
-
+    
     /**
      * print phylolib tree to a file.
      * @param suffix suffix string for the tree file

@@ -682,7 +682,6 @@ int IQTree::addTreeToCandidateSet(string treeString, double score, bool updateSt
             if (pos != -1) {
                 stop_rule.addImprovedIteration(stop_rule.getCurIt());
                 cout << "BETTER TREE FOUND at iteration " << stop_rule.getCurIt() << ": " << score << endl;
-                // cout << "We are here! " << endl;
             } else {
                 cout << "UPDATE BEST LOG-LIKELIHOOD: " << score << endl;
             }
@@ -2222,6 +2221,9 @@ double IQTree::doTreeSearch() {
     
     cout << "INITIAL BEST TREE SCORE: " << candidateTrees.getBestScore() << " / CPU time: " <<
     getRealTime() - initCPUTime << endl;
+    if (Params::getInstance().write_intermediate_trees && save_all_trees != 2) {
+        printIntermediateTree(WT_APPEND | WT_BR_LEN | WT_BR_LEN_FIXED_WIDTH | WT_SORT_TAXA | WT_NEWLINE);
+    }
     //printBestCandidateTree();
     
     /* Initialize candidate tree set */
@@ -2294,11 +2296,8 @@ double IQTree::doTreeSearch() {
     // count threshold for computing bootstrap correlation
     int ufboot_count, ufboot_count_check;
     stop_rule.getUFBootCountCheck(ufboot_count, ufboot_count_check);
-    int round = 0;
-    
+
     while (!stop_rule.meetStopCondition(stop_rule.getCurIt(), cur_correlation)) {
-        
-        round ++;
         
         searchinfo.curIter = stop_rule.getCurIt();
         // estimate logl_cutoff for bootstrap
@@ -2402,10 +2401,8 @@ double IQTree::doTreeSearch() {
 
         // print UFBoot trees every 10 iterations
 
-        //if (pos != -1) cout << "Before " << endl;
         saveCheckpoint();
-        //if (pos != -1) cout << "After " << endl;
-        checkpoint->dump(pos != - 1 ? true : false);
+        checkpoint->dump();
         
         if (bestcandidate_changed) {
             printBestCandidateTree();
@@ -2736,7 +2733,10 @@ void IQTree::refineBootTrees() {
             boot_tree->constraintTree.readConstraint(constraintTree);
         }
 
+        // set likelihood kernel
         boot_tree->setParams(params);
+        boot_tree->setLikelihoodKernel(sse);
+        boot_tree->setNumThreads(num_threads);
 
         // 2019-06-03: bug fix setting part_info properly
         if (boot_tree->isSuperTree())
@@ -2750,11 +2750,6 @@ void IQTree::refineBootTrees() {
             ((PartitionModel*)boot_tree->getModelFactory())->PartitionModel::restoreCheckpoint();
         else
             boot_tree->getModelFactory()->restoreCheckpoint();
-
-        // set likelihood kernel
-        boot_tree->setParams(params);
-        boot_tree->setLikelihoodKernel(sse);
-        boot_tree->setNumThreads(num_threads);
 
         // load the current ufboot tree
         // 2019-02-06: fix crash with -sp and -bnni
@@ -2956,6 +2951,7 @@ pair<int, int> IQTree::doNNISearch(bool write_info) {
     computeLogL();
     double curBestScore = getBestScore();
 
+    // I don't print anything here
     if (false && Params::getInstance().write_intermediate_trees && save_all_trees != 2) {
 #ifdef _OPENMP
 #pragma omp critical
@@ -2967,10 +2963,7 @@ pair<int, int> IQTree::doNNISearch(bool write_info) {
 
     pair<int, int> nniInfos; // Number of NNIs and number of steps
     if (params->pll) {
-        
-        //cout << "PLL is being used " << endl;
-        //getchar();
-
+        // PLL is not used
         if (params->partition_file)
             outError("Unsupported -pll -sp combination!");
         curScore = pllOptimizeNNI(nniInfos.first, nniInfos.second, searchinfo);
@@ -2978,9 +2971,6 @@ pair<int, int> IQTree::doNNISearch(bool write_info) {
                 PLL_TRUE, 0, 0, 0, PLL_SUMMARIZE_LH, 0, 0);
         readTreeString(string(pllInst->tree_string));
     } else {
-
-        //cout << "PLL is NOT used " << endl;
-        //getchar();
 
         prepareToComputeDistances();
         nniInfos = optimizeNNI(Params::getInstance().speednni);
@@ -3203,26 +3193,22 @@ pair<int, int> IQTree::optimizeNNI(bool speedNNI) {
         if (params->snni && (curScore > curBestScore + 0.1)) {
             curBestScore = curScore;
             
-            // writing trees
-            cout << "Writing NNIs " << endl;
-            getchar();
+            /*
+            if (Params::getInstance().write_intermediate_trees && save_all_trees != 2) {
+                printIntermediateTree(WT_APPEND | WT_BR_LEN | WT_BR_LEN_FIXED_WIDTH | WT_SORT_TAXA | WT_NEWLINE);
+            }
+            */
             
             doNNIs(appliedNNIs, false); // rollback
             doNNIs(appliedNNIs, false, true);
-
-            
             double test_score = optimizeAllBranches(0, params->loglh_epsilon, PLL_NEWZPERCYCLE);
-            cout << "Test score " << test_score << ", and current score " << curBestScore << endl;
-
             ASSERT(fabs(test_score-curBestScore)<1e-1 && "Test score is not identical with current score\n");
 
-            cout << "End " << endl;
-            getchar();
-            //done
+            //cout << "Test score " << test_score << ", and current score " << curBestScore << endl;
 
-            //string chkp_tree = getTopologyString(true, true);
-            //printGivenTree(chkp_tree);
-            //printBestCandidateTree
+
+            //cout << "End " << endl;
+            //getchar();
         }
 
 
@@ -4345,29 +4331,6 @@ void IQTree::printBestCandidateTree() {
         cout << "Best tree printed to " << tree_file_name << endl;
 }
 
-
-void IQTree::printGivenTree(const string& tree_string) {
-    
-    counter ++;
-    cout << "-----------------------------------" << endl;
-    cout << "Saving, topology counter = " << counter << endl;
-    cout << "-----------------------------------" << endl;
-    
-    if (MPIHelper::getInstance().isWorker())
-        return;
-    if (params->suppress_output_flags & OUT_TREEFILE)
-        return;
-    
-    string tmp_file_name = params->out_prefix;
-    tmp_file_name += ".lastTree.TMP_" + to_string(counter);
-
-    readTreeString(tree_string);
-    setRootNode(params->root);
-    printTree(tmp_file_name.c_str(), WT_BR_LEN | WT_BR_LEN_FIXED_WIDTH | WT_SORT_TAXA | WT_NEWLINE);
-    
-}
-
-
 void IQTree::printPhylolibTree(const char* suffix) {
     pllTreeToNewick(pllInst->tree_string, pllInst, pllPartitions, pllInst->start->back, PLL_TRUE, 1, 0, 0, 0,
             PLL_SUMMARIZE_LH, 0, 0);
@@ -4377,14 +4340,12 @@ void IQTree::printPhylolibTree(const char* suffix) {
     FILE *phylolib_tree = fopen(phylolibTree, "w");
     fprintf(phylolib_tree, "%s", pllInst->tree_string);
     cout << "Tree optimized by Phylolib was written to " << phylolibTree << endl;
+    fclose(phylolib_tree);
 }
 
 void IQTree::printIntermediateTree(int brtype) {
     
-    counter ++;
-
-    string tmp_file_name = params->out_prefix;
-    tmp_file_name += ".lastTree.TMP_" + to_string(counter);
+    counter++;
 
     setRootNode(params->root);
     double *pattern_lh = NULL;

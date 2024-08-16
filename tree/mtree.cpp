@@ -433,9 +433,7 @@ void MTree::printTree(ostream &out, int brtype) {
             out << ")";
         } else {
             // tree has more than 2 taxa
-            //cout << "Inside " << endl;
             printTree(out, brtype, root->neighbors[0]->node);
-            //cout << "Done " << endl;
         }
     } else
         printTree(out, brtype, root);
@@ -952,6 +950,17 @@ void MTree::parseFile(istream &infile, char &ch, Node* &root, DoubleVector &bran
     }
     if ((controlchar(ch) || ch == '[' || ch == end_ch) && !infile.eof())
         ch = readNextChar(infile, ch);
+    // if ch == '/' then continue to add to the seqname
+    if (ch == '/') {
+        while (!infile.eof() && seqlen < maxlen)
+        {
+            if (is_newick_token(ch) || controlchar(ch)) break;
+            seqname += ch;
+            seqlen++;
+            ch = infile.get();
+            in_column++;
+        }
+    }
     if (seqlen == maxlen)
         throw "Too long name ( > 1000)";
     if (root->isLeaf())
@@ -2625,8 +2634,13 @@ void MTree::computeRFDist(istream &in, DoubleVector &dist, int assign_sup, bool 
 		// create the map from taxa between 2 trees
 		Split taxa_mask(leafNum);
 		for (StrVector::iterator it = taxname.begin(); it != taxname.end(); it++) {
-            if (name_index.find(*it) == name_index.end())
-                outError("Taxon not found in full tree: ", *it);
+            if (name_index.find(*it) == name_index.end()) {
+                        	if (*it == "__root__") {
+					cout << "WARNING : By default, trees without a multifurcation at the root are treated as rooted." << endl;
+					cout << "          You may need to change your tree structure." << endl;
+				}
+                        outError("Taxon not found in full tree: ", *it);
+			}
 			taxid = name_index[*it];
 			taxa_mask.addTaxon(taxid);
 		}
