@@ -1,0 +1,151 @@
+IQ-TREE 2.3.6 built Aug 16 2024
+
+Input file name: ../data/test.phy
+User tree file name: ../data/random_starting.Tree
+Type of analysis: tree reconstruction
+Random seed number: 0
+
+REFERENCES
+----------
+
+To cite IQ-TREE please use:
+
+Bui Quang Minh, Heiko A. Schmidt, Olga Chernomor, Dominik Schrempf,
+Michael D. Woodhams, Arndt von Haeseler, and Robert Lanfear (2020)
+IQ-TREE 2: New models and efficient methods for phylogenetic inference
+in the genomic era. Mol. Biol. Evol., in press.
+https://doi.org/10.1093/molbev/msaa015
+
+SEQUENCE ALIGNMENT
+------------------
+
+Input data: 22 sequences with 69577 nucleotide sites
+Number of constant sites: 67003 (= 96.3005% of all sites)
+Number of invariant (constant or ambiguous constant) sites: 67003 (= 96.3005% of all sites)
+Number of parsimony informative sites: 852
+Number of distinct site patterns: 1266
+
+SUBSTITUTION PROCESS
+--------------------
+
+Model of substitution: GTR+F+G4
+
+Rate parameter R:
+
+  A-C: 1.5691
+  A-G: 1.5465
+  A-T: 0.3028
+  C-G: 0.5684
+  C-T: 1.5891
+  G-T: 1.0000
+
+State frequencies: (empirical counts from alignment)
+
+  pi(A) = 0.2991
+  pi(C) = 0.1767
+  pi(G) = 0.1999
+  pi(T) = 0.3243
+
+Rate matrix Q:
+
+  A   -0.8991    0.3642     0.406    0.1289
+  C    0.6163    -1.442    0.1492    0.6767
+  G    0.6074    0.1319    -1.165    0.4259
+  T    0.1189    0.3688    0.2625   -0.7503
+
+Model of rate heterogeneity: Gamma with 4 categories
+Gamma shape alpha: 0.02002
+
+ Category  Relative_rate  Proportion
+  1         4.741e-31      0.25
+  2         1.03e-15       0.25
+  3         9.648e-07      0.25
+  4         4              0.25
+Relative rates are computed as MEAN of the portion of the Gamma distribution falling in the category.
+
+MAXIMUM LIKELIHOOD TREE
+-----------------------
+
+Log-likelihood of the tree: -119644.3306 (s.e. 500.5289)
+Unconstrained log-likelihood (without tree): -167002.1296
+Number of free parameters (#branches + #model parameters): 50
+Akaike information criterion (AIC) score: 239388.6612
+Corrected Akaike information criterion (AICc) score: 239388.7345
+Bayesian information criterion (BIC) score: 239846.1706
+
+Total tree length (sum of branch lengths): 0.0483
+Sum of internal branch lengths: 0.0121 (24.9689% of tree length)
+
+NOTE: Tree is UNROOTED although outgroup taxon 'Viburnum_acerifolium' is drawn at root
+
++--Viburnum_acerifolium
+|
+|                              +--------------------Viburnum_amplificatum
+|                           +--|
+|                           |  |             +--Viburnum_erubescens
+|                           |  |          +--|
+|                           |  |          |  +---------------------Viburnum_sieboldii
+|                           |  |  +-------|
+|                           |  |  |       +-----Viburnum_grandiflorum
+|                           |  +--|
+|                           |     |      +------Viburnum_lutescens
+|                           |     +------|
+|                           |            +-------Viburnum_plicatum
+|                        +--|
+|                        |  +----------------Viburnum_taiwanianum
+|                   +----|
+|                   |    |               +------Viburnum_carlesii
+|                   |    |            +--|
+|                   |    |            |  +---------Viburnum_punctatum
+|                   |    |     +------|
+|                   |    |     |      |  +------Viburnum_cassinoides
+|                   |    |     |      +--|
+|                   |    |     |         +---------Viburnum_lentago
+|                   |    |  +--|
+|                   |    |  |  +--------Viburnum_lantanoides
+|                   |    +--|
+|                   |       +----------------------------Viburnum_clemensiae
+|                +--|
+|                |  +----------------------Viburnum_tinus
+|     +----------|
+|     |          |                          +--Viburnum_dentatum
+|     |          |                     +----|
+|     |          |                     |    +---Viburnum_triphyllum
+|     |          |  +------------------|
+|     |          |  |                  +-----Viburnum_molle
+|     |          +--|
+|     |             +---------------Viburnum_opulus
+|  +--|
+|  |  +------------------Viburnum_vernicosum
++--|
+|  +------Viburnum_cylindricum
+|
++-----Viburnum_dilatatum
+
+Tree in newick format:
+
+(Viburnum_acerifolium:0.0004536711,(((((((Viburnum_amplificatum:0.0030688757,(((Viburnum_erubescens:0.0004390941,Viburnum_sieboldii:0.0031855268):0.0003645443,Viburnum_grandiflorum:0.0009336955):0.0011667964,(Viburnum_lutescens:0.0010474324,Viburnum_plicatum:0.0012315994):0.0011164945):0.0004292891):0.0002650899,Viburnum_taiwanianum:0.0024846701):0.0002475735,((((Viburnum_carlesii:0.0010570041,Viburnum_punctatum:0.0015350218):0.0003857094,(Viburnum_cassinoides:0.0010996759,Viburnum_lentago:0.0015619396):0.0000939794):0.0010831430,Viburnum_lantanoides:0.0013358488):0.0000867552,Viburnum_clemensiae:0.0042336828):0.0002084896):0.0007947516,Viburnum_tinus:0.0033461917):0.0001054976,(((Viburnum_dentatum:0.0003365236,Viburnum_triphyllum:0.0006707626):0.0008336069,Viburnum_molle:0.0009572296):0.0027407458,Viburnum_opulus:0.0024302322):0.0000867238):0.0016404702,Viburnum_vernicosum:0.0027642018):0.0002897542,Viburnum_cylindricum:0.0010894195):0.0001110838,Viburnum_dilatatum:0.0009491628);
+
+ALISIM COMMAND
+--------------
+To simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis, you can use the following command:
+
+--alisim simulated_MSA -t ../data/test.phy.treefile -m "GTR{1.56908,1.54652,0.302783,0.568415,1.58914}+F{0.299083,0.176742,0.19989,0.324284}+G4{0.0200207}" --length 69577
+
+To mimic the alignment used to produce this analysis, i.e. simulate an alignment of the same length as the original alignment, using the tree and model parameters estimated from this analysis *and* copying the same gap positions as the original alignment, you can use the following command:
+
+iqtree -s ../data/test.phy --alisim mimicked_MSA
+
+To simulate any number of alignments in either of the two commandlines above, use the --num-alignments options, for example mimic 100 alignments you would use the command line:
+
+iqtree -s ../data/test.phy --alisim mimicked_MSA --num-alignments 100
+
+For more information on using AliSim, please visit: www.iqtree.org/doc/AliSim
+
+TIME STAMP
+----------
+
+Date and time: Sun Aug 18 19:46:22 2024
+Total CPU time used: 6.97487 seconds (0h:0m:6s)
+Total wall-clock time used: 7.02174 seconds (0h:0m:7s)
+
